@@ -1,10 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-
-    <meta charset="UTF-8">
-    <title>Customizable Text Logo</title>
-    <style>
+<meta charset="utf-8"/>
+<title>Customizable Text Logo</title>
+<style>
         @font-face {
             font-family: 'VintageHat';
             src: url('VintageHat.OTF') format('opentype');
@@ -175,29 +175,26 @@ display:inline-grid;
         }
 
     </style>
-</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/opentype.js/1.3.0/opentype.min.js"></script></head>
 <body>
-
 <div class="container">
-
-    <canvas id="logoCanvas" width="900" height="280"></canvas>
-    <div class="controls">
-        <div>
-        <label for="topText">Top Text:</label>
-        <input type="text" id="topText">
-        <label for="bottomText">Bottom Text:</label>
-        <input type="text" id="bottomText">
-                     <label>Line Width</label>
-<input type="range" id="svgWidthSlider" min="100" max="1000" value="450">
-        </div>
-        <label>Font Color:</label>
-        <div id="fontColorPicker"></div>
-        <label>Line Color:</label>
-        <div id="lineColorPicker"></div><br>
-        <button id="downloadBtn">Download SVG</button>
-    </div>
+<canvas height="280" id="logoCanvas" width="900"></canvas>
+<div class="controls">
+<div>
+<label for="topText">Top Text:</label>
+<input id="topText" type="text"/>
+<label for="bottomText">Bottom Text:</label>
+<input id="bottomText" type="text"/>
+<label>Line Width</label>
+<input id="svgWidthSlider" max="1000" min="100" type="range" value="450"/>
 </div>
-
+<label>Font Color:</label>
+<div id="fontColorPicker"></div>
+<label>Line Color:</label>
+<div id="lineColorPicker"></div><br/>
+<button id="downloadBtn">Download SVG</button>
+</div>
+</div>
 <script src="fabric/fabric.js"></script>
 <script>
     document.fonts.load('1em "VintageHat"').then(function () {
@@ -390,7 +387,62 @@ document.getElementById('downloadBtn').addEventListener('click', function () {
 
         
     });
-</script>
 
+// Function to convert text to paths using opentype.js
+function convertTextToPaths() {
+    // Load the font (assuming the font is available at 'path/to/font.otf')
+    opentype.load('path/to/font.otf', function(err, font) {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        // Locate all text elements within the SVG (assuming the SVG id is 'svgElement')
+        const svg = document.getElementById('svgElement');
+        const textElements = svg.querySelectorAll('text');
+        textElements.forEach(function(textElement) {
+            const text = textElement.textContent;
+            const x = parseFloat(textElement.getAttribute('x') || 0);
+            const y = parseFloat(textElement.getAttribute('y') || 0);
+            const pathData = font.getPath(text, x, y, /* fontSize= */ 72).toPathData();
+            const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            pathElement.setAttribute('d', pathData);
+            textElement.parentNode.replaceChild(pathElement, textElement);
+        });
+    });
+}
+
+// Update your 'Download SVG' logic to call 'convertTextToPaths' before generating the download link
+// ...
+
+// Function to convert text to paths using opentype.js
+function convertTextToPaths() {
+    // Load the font (assuming the font is available at 'VintageHat.otf')
+    opentype.load('VintageHat.otf', function(err, font) {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        // Locate all text elements within the SVG (assuming the SVG id is 'svgElement')
+        const svg = document.getElementById('svgElement');
+        const textElements = svg.querySelectorAll('text');
+        textElements.forEach(function(textElement) {
+            const text = textElement.textContent;
+            const x = parseFloat(textElement.getAttribute('x') || 0);
+            const y = parseFloat(textElement.getAttribute('y') || 0);
+            const pathData = font.getPath(text, x, y, /* fontSize= */ 72).toPathData();
+            const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            pathElement.setAttribute('d', pathData);
+            textElement.parentNode.replaceChild(pathElement, textElement);
+        });
+    });
+}
+
+// Placeholder to show where to call 'convertTextToPaths' in your 'Download SVG' logic
+function downloadSVG() {
+    convertTextToPaths();
+    // Existing 'Download SVG' logic goes here
+    // ...
+}
+</script>
 </body>
 </html>
