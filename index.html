@@ -247,39 +247,41 @@ function textToPath(textObject, callback) {
   });
 }
 
-document.getElementById('downloadBtn').addEventListener('click', function () {
-    textToPath(topText, function(topTextPath) {
-        textToPath(bottomText, function(bottomTextPath) {
-            // Remove original text objects
-            if (topText) canvas.remove(topText);
-            if (bottomText) canvas.remove(bottomText);
+document.getElementById('downloadBtn').addEventListener('click', async function () {
+    const [topTextPath, bottomTextPath] = await Promise.all([
+        new Promise(resolve => textToPath(topText, resolve)),
+        new Promise(resolve => textToPath(bottomText, resolve))
+    ]);
 
-            // Add path objects
-            if (topTextPath) canvas.add(topTextPath);
-            if (bottomTextPath) canvas.add(bottomTextPath);
+    // Remove original text objects
+    if (topText) canvas.remove(topText);
+    if (bottomText) canvas.remove(bottomText);
 
-            // Export and download SVG
-            const svgData = canvas.toSVG();
-            const blob = new Blob([svgData], { type: 'image/svg+xml' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'custom_logo.svg';
-            a.click();
+    // Add path objects
+    if (topTextPath) canvas.add(topTextPath);
+    if (bottomTextPath) canvas.add(bottomTextPath);
 
-            // Remove path objects and re-add text objects for further editing
-            if (topTextPath) canvas.remove(topTextPath);
-            if (bottomTextPath) canvas.remove(bottomTextPath);
-            if (topText) canvas.add(topText);
-            if (bottomText) canvas.add(bottomText);
+    // Export and download SVG
+    const svgData = canvas.toSVG();
+    const blob = new Blob([svgData], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'custom_logo.svg';
+    a.click();
 
-            // Revoke the blob URL
-            URL.revokeObjectURL(url);
+    // Remove path objects and re-add text objects for further editing
+    if (topTextPath) canvas.remove(topTextPath);
+    if (bottomTextPath) canvas.remove(bottomTextPath);
+    if (topText) canvas.add(topText);
+    if (bottomText) canvas.add(bottomText);
 
-            canvas.renderAll();
-        });
-    });
+    // Revoke the blob URL
+    URL.revokeObjectURL(url);
+
+    canvas.renderAll();
 });
+
 
         
     });
