@@ -286,7 +286,7 @@ fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
 
   generateColorOptions('lineColorPicker', colorOptions, (color) => {
     if (loadedObject) {
-      loadedObject.set({fill: color});
+      loadedObject.set({ fill: color });
       canvas.renderAll();
     }
   });
@@ -337,7 +337,7 @@ fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
     canvas.renderAll();
   });
 
-  document.getElementById('svgWidthSlider').addEventListener('input', function() {
+  document.getElementById('svgWidthSlider').addEventListener('input', function () {
     if (loadedObject) {
       const newWidth = parseFloat(this.value);
       const scaleFactor = newWidth / loadedObject.getScaledWidth();
@@ -353,40 +353,33 @@ fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
   function textToPath(textObject, callback) {
     if (!textObject) return;
 
-    const clonedObject = fabric.util.object.clone(textObject);
-    fabric.util.object.extend(clonedObject, {
-      type: 'path',
-      path: fabric.util.stringToPath(clonedObject.text),
-      fill: clonedObject.fill,
-      stroke: clonedObject.stroke,
-      strokeWidth: clonedObject.strokeWidth,
-      scaleX: clonedObject.scaleX,
-      scaleY: clonedObject.scaleY,
-      angle: clonedObject.angle,
-      left: clonedObject.left,
-      top: clonedObject.top,
-      originX: clonedObject.originX,
-      originY: clonedObject.originY
+    const textAsSVG = textObject.toSVG();
+    fabric.loadSVGFromString(textAsSVG, function (objects, options) {
+      const pathObject = fabric.util.groupSVGElements(objects, options);
+      pathObject.set({
+        left: textObject.left,
+        top: textObject.top,
+        fill: textObject.fill,
+        originX: 'center',
+        originY: 'center'
+      });
+      callback(pathObject);
     });
-
-    callback(clonedObject);
   }
 
   document.getElementById('downloadBtn').addEventListener('click', function () {
-    canvas.discardActiveObject();
-    canvas.renderAll();
-
     canvas.getObjects().forEach(function (obj) {
       if (obj.type === 'text') {
         textToPath(obj, function (pathObject) {
           canvas.remove(obj);
           canvas.add(pathObject);
+          canvas.renderAll();
         });
       }
     });
 
     const svgData = canvas.toSVG();
-    const blob = new Blob([svgData], {type: 'image/svg+xml'});
+    const blob = new Blob([svgData], { type: 'image/svg+xml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -397,53 +390,18 @@ fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
     canvas.getObjects().forEach(function (obj) {
       if (obj.type === 'path') {
         canvas.remove(obj);
-        textToPath(obj, function (textObject) {
-          canvas.add(textObject);
-        });
       }
     });
 
     canvas.renderAll();
-  });
-
-  document.getElementById('downloadBtn').addEventListener('click', function () {
-    const svgData = canvas.toSVG();
-    const blob = new Blob([svgData], {type: 'image/svg+xml'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'custom_logo.svg';
-    a.click();
-    URL.revokeObjectURL(url);
   });
 
   });
   </script>
   </body>
   </html>
-    URL.revokeObjectURL(url);
-
-    canvas.getObjects().forEach(function (obj) {
-      if (obj.type === 'path') {
-        canvas.remove(obj);
-        textToPath(obj, function (textObject) {
-          canvas.add(textObject);
-        });
-      }
-    });
 
     canvas.renderAll();
-  });
-
-  document.getElementById('downloadBtn').addEventListener('click', function () {
-    const svgData = canvas.toSVG();
-    const blob = new Blob([svgData], {type: 'image/svg+xml'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'custom_logo.svg';
-    a.click();
-    URL.revokeObjectURL(url);
   });
 
   });
