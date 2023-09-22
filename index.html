@@ -107,11 +107,41 @@ fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
             });
         }
 
-        const colorOptions = [
-            {value: '#000000', label: 'Black'},
-            {value: '#ffffff', label: 'White'},
-            // Add more colors here
-        ];
+     const colorOptions = [
+  { name: "White", color: "#ffffff" },
+  { name: "Grey", color: "#a2a9ad" },
+  { name: "Black", color: "#0D131A" },
+  { name: "Dark Grey", color: "#373a36" },
+  { name: "Brown", color: "#513629" },
+  { name: "Vegas Khaki", color: "#d0b787" },
+  { name: "Metallic Gold", color: "#85714D" },
+  { name: "Navy Blue", color: "#12284b" },
+  { name: "Forest Green", color: "#114734" },
+  { name: "Kelly Green", color: "#007940" },
+  { name: "Deep Teal", color: "#006271" },
+  { name: "Light Teal", color: "#00b1bd" },
+  { name: "Nike Carolina", color: "#6fa2e4" },
+  { name: "Hopkins Blue", color: "#418fde" },
+  { name: "Nike Cobalt", color: "#174293" },
+  { name: "Cascade Carolina", color: "#6dd6ff" },
+  { name: "Seafoam", color: "#80fff3" },
+  { name: "Lime Green", color: "#93d500" },
+  { name: "Electric Green", color: "#03db48" },
+  { name: "Athletic Gold", color: "#ffb71b" },
+  { name: "Yellow", color: "#fff200" },
+  { name: "Nike Orange", color: "#ee3724" },
+  { name: "Cascade Orange", color: "#ff5219" },
+  { name: "Tennesee Orange", color: "#FF8200" },
+  { name: "Purple", color: "#592d82" },
+  { name: "Hot Pink", color: "#f732a1" },
+  { name: "Light Pink", color: "#ffa5d8" },
+  { name: "Burgundy", color: "#6e0624" },
+  { name: "Deep Burgundy", color: "#50131f" },
+  { name: "Crimson", color: "#A41034" },
+  { name: "Scarlet Red", color: "#d00120" },
+  { name: "Texas Orange", color: "#CD5A13" }
+];
+
 
         generateColorOptions('fontColorPicker', colorOptions, (color) => {
             if (topText) {
