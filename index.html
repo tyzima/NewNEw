@@ -9,6 +9,91 @@
             font-family: 'VintageHat';
             src: url('VintageHat.OTF') format('opentype');
         }
+
+        @import url("//fonts.googleapis.com/css2?family=Alfa+Slab+One:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap");
+
+/* Controls */
+.container .controls{
+ position:static;
+ z-index:138;
+ transform:translatex(0px) translatey(0px);
+ float:none;
+ opacity:1;
+ clear:none;
+ display:inline-flex;
+ cursor:auto;
+ left:auto !important;
+ grid-template-columns:1fr;
+ align-content:center;
+ justify-content:center;
+ pointer-events:auto;
+ flex-direction:column;
+ align-items:normal;
+ width:949px;
+}
+
+/* Container */
+.container{
+ transform:translatex(0px) translatey(0px);
+ position:static;
+ display:grid;
+ align-content:center;
+ justify-content:center;
+}
+
+/* Heading */
+.container h1{
+ text-align:center;
+ font-family:'Alfa Slab One', display;
+ font-style:normal;
+ text-transform:none;
+ letter-spacing:7.7px;
+}
+
+/* Label */
+.container .controls label{
+ text-align:center;
+ text-shadow:none;
+ text-transform:uppercase;
+ font-style:normal;
+ line-height:24.4px;
+ font-size:11px;
+}
+
+/* Top text */
+#topText{
+ transform:translatex(0px) translatey(0px);
+ float:none;
+ display:grid;
+}
+
+/* Font color picker */
+#fontColorPicker{
+ display:inline-flex;
+ flex-wrap:wrap;
+ width:100%;
+ transform:translatex(0px) translatey(0px);
+ background-color:transparent !important;
+}
+
+/* Line color picker */
+#lineColorPicker{
+ display:inline-flex;
+ flex-wrap:wrap;
+ flex-direction:row;
+}
+
+/* Download */
+#downloadBtn{
+ background-image:linear-gradient(to right, #0575e6 0%, #021b79 100%);
+}
+
+/* Width slider */
+#svgWidthSlider{
+ background-color:transparent;
+ box-shadow:none;
+}
+
         .container {
             font-family: 'Roboto', sans-serif;
             margin: 20px;
