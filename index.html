@@ -82,8 +82,8 @@
   loadedObject.set({
     left: canvas.width / 2,
     top: canvas.height / 2,
-    scaleX: 0.5,
-    scaleY: 0.5,
+    scaleX: 0.6,
+    scaleY: 0.6,
     originX: 'center',
     originY: 'center'
   });
@@ -120,7 +120,7 @@
 
         generateColorOptions('lineColorPicker', colorOptions, (color) => {
             if (loadedObject) {
-                loadedObject.set({stroke: color});
+                loadedObject.set({fill: color});
                 canvas.renderAll();
             }
         });
