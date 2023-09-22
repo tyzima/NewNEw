@@ -77,13 +77,15 @@
         let loadedObject;
         let topText, bottomText;
 
-    fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
+    // After loading SVG
+fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
   loadedObject = fabric.util.groupSVGElements(objects, options);
+  const scaleFactor = 182.598 / loadedObject.height;
   loadedObject.set({
     left: canvas.width / 2,
     top: canvas.height / 2,
-    scaleX: 0.6,
-    scaleY: 0.6,
+    scaleX: scaleFactor,
+    scaleY: scaleFactor,
     originX: 'center',
     originY: 'center'
   });
@@ -126,12 +128,15 @@
         });
 
 
-        function addTopText(position, text, color) {
+
+
+// Adding top text
+function addTopText(position, text, color) {
   const newText = new fabric.Text(text, {
     left: canvas.width / 2,
     top: position,
     fill: color,
-    fontSize: 48,
+    fontSize: 107,
     fontFamily: 'VintageHat',
     originX: 'center',
     originY: 'center'
@@ -143,19 +148,18 @@ document.getElementById('topText').addEventListener('input', function () {
   if (topText) {
     canvas.remove(topText);
   }
-  topText = addTopText(100, this.value, '#000000');
+  topText = addTopText(158.9355, this.value, '#000000');
   canvas.add(topText);
   canvas.renderAll();
 });
 
-
-        
+// Adding bottom text
 function addBottomText(position, text, color) {
   const newText = new fabric.Text(text, {
     left: canvas.width / 2,
-    top: position - 30,
+    top: position,
     fill: color,
-    fontSize: 24,
+    fontSize: 66.6757,
     fontFamily: 'VintageHat',
     originX: 'center',
     originY: 'center'
@@ -167,10 +171,11 @@ document.getElementById('bottomText').addEventListener('input', function () {
   if (bottomText) {
     canvas.remove(bottomText);
   }
-  bottomText = addBottomText(300, this.value, '#000000');
+  bottomText = addBottomText(231.8011, this.value, '#000000');
   canvas.add(bottomText);
   canvas.renderAll();
 });
+
 
 
         document.getElementById('downloadBtn').addEventListener('click', function () {
