@@ -77,7 +77,6 @@
         let loadedObject;
         let topText, bottomText;
 
-    // After loading SVG
 fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
   loadedObject = fabric.util.groupSVGElements(objects, options);
   const scaleFactor = 182.598 / loadedObject.height;
@@ -89,9 +88,17 @@ fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
     originX: 'center',
     originY: 'center'
   });
-  canvas.add(loadedObject).renderAll();
-});
+  canvas.add(loadedObject);
 
+  // Initialize default text for top and bottom
+  topText = addTopText(158.9355, "TEAMNAME", "#000000");
+  canvas.add(topText);
+  
+  bottomText = addBottomText(231.8011, "LACROSSE", "#000000");
+  canvas.add(bottomText);
+
+  canvas.renderAll();
+});
 
         function generateColorOptions(elementId, colors, callback) {
             const container = document.getElementById(elementId);
