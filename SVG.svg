@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="b" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" width="753.012" height="309.48" viewBox="0 0 753.012 309.48">
-  <g id="c" data-name="a">
-    <g>
-      <rect y="291.114" width="753.012" height="18.367"/>
-      <rect y="174.773" width="753.012" height="18.367"/>
-      <rect width="753.012" height="18.367"/>
-    </g>
+<svg id="b" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" width="564.759" height="182.597" viewBox="0 0 564.759 182.597">
+  <g id="c" data-name="Layer 1">
+    <path d="m0,171.761h564.759v10.837H0v-10.837Zm0-68.641h564.759v10.837H0v-10.837ZM0,0h564.759v10.837H0V0Z" fill="#c10000"/>
   </g>
 </svg>
