@@ -175,7 +175,14 @@ display:inline-grid;
         }
 
     </style>
-<script src="opentype.js"></script></head>
+<script src="opentype.js">
+
+async function convertAndDownloadSVG(canvas) {
+    const allObjects = canvas.getObjects();
+    // ... (rest of the code for convertAndDownloadSVG remains the same)
+}
+
+</script></head>
 <body>
 <div class="container">
 <canvas height="280" id="logoCanvas" width="900"></canvas>
@@ -197,11 +204,6 @@ display:inline-grid;
 </div>
 <script src="fabric/fabric.js"></script>
 <script>
-async function convertAndDownloadSVG() {
-    const allObjects = canvas.getObjects();
-    // ... (rest of the code for convertAndDownloadSVG remains the same)
-}
-
         
 let canvas;  // Declare here
 
