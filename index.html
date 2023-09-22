@@ -387,17 +387,7 @@ document.getElementById('downloadBtn').addEventListener('click', function () {
 
         
     });
-
-// Convert all text objects to paths before exporting
-canvas.forEachObject(function(obj) {
-  if (obj.type === 'text' || obj.type === 'i-text') {
-    obj.clone(function(clone) {
-      var path = clone.toPathObject();
-      canvas.remove(obj);
-      canvas.add(path);
-    });
-  }
-});
 </script>
 </body>
 </html>
+
