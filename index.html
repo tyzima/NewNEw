@@ -249,37 +249,16 @@ function textToPath(textObject, callback) {
   });
 }
 
-document.getElementById('downloadSVG').addEventListener('click', function() {
-  textToPath(topText, function(topTextPath) {
-    textToPath(bottomText, function(bottomTextPath) {
-      // Remove original text objects
-      if (topText) canvas.remove(topText);
-      if (bottomText) canvas.remove(bottomText);
-
-      // Add path objects
-      if (topTextPath) canvas.add(topTextPath);
-      if (bottomTextPath) canvas.add(bottomTextPath);
-
-      // Export and download SVG
-      const svgData = canvas.toSVG();
-      const blob = new Blob([svgData], { type: 'image/svg+xml' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'logo.svg';
-      a.click();
-
-      // Remove path objects and re-add text objects for further editing
-      if (topTextPath) canvas.remove(topTextPath);
-      if (bottomTextPath) canvas.remove(bottomTextPath);
-      if (topText) canvas.add(topText);
-      if (bottomText) canvas.add(bottomText);
-
-      canvas.renderAll();
-    });
-  });
-});
-
+document.getElementById('downloadBtn').addEventListener('click', function () {
+            const svgData = canvas.toSVG();
+            const blob = new Blob([svgData], {type: 'image/svg+xml'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'custom_logo.svg';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
 
 
 
