@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <title>Customizable Text Logo</title>
     <style>
@@ -71,6 +72,8 @@
 </div>
 
 <script src="fabric/fabric.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.3/html2canvas.min.js"></script>
 <script>
     document.fonts.load('1em "VintageHat"').then(function () {
         const canvas = new fabric.Canvas('logoCanvas');
@@ -253,34 +256,28 @@ document.getElementById('downloadBtn').addEventListener('click', async function 
         new Promise(resolve => textToPath(bottomText, resolve))
     ]);
 
-    // Remove original text objects
     if (topText) canvas.remove(topText);
     if (bottomText) canvas.remove(bottomText);
-
-    // Add path objects
     if (topTextPath) canvas.add(topTextPath);
     if (bottomTextPath) canvas.add(bottomTextPath);
 
-    // Export and download SVG
     const svgData = canvas.toSVG();
-    const blob = new Blob([svgData], { type: 'image/svg+xml' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'custom_logo.svg';
-    a.click();
 
-    // Remove path objects and re-add text objects for further editing
     if (topTextPath) canvas.remove(topTextPath);
     if (bottomTextPath) canvas.remove(bottomTextPath);
     if (topText) canvas.add(topText);
     if (bottomText) canvas.add(bottomText);
 
-    // Revoke the blob URL
-    URL.revokeObjectURL(url);
-
-    canvas.renderAll();
+    const pdf = new jsPDF();
+    pdf.svg(svgData, {
+        x: 0,
+        y: 0,
+        width: 210,
+        height: 297,
+    });
+    pdf.save('custom_logo.pdf');
 });
+
 
 
         
