@@ -403,7 +403,7 @@ function textToPath(textObject, callback) {
 
 async function downloadSVG(){
     // Load the font first
-    const font = await opentype.load('path/to/your/font.ttf');
+    const font = await opentype.load('.VintageHat.OTF');
 
     const textEls = document.querySelectorAll('#svg-container text');
     textEls.forEach(textEl => {
