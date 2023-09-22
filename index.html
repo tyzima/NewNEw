@@ -163,12 +163,20 @@ display:inline-grid;
   flex-direction: row;
             padding: 20px;
 }
+        .logo {
+            position: relative;
+left: 50%;
+-webkit-transform: translateX(-50%);
+-ms-transform: translateX(-50%);
+transform: translateX(-50%);
+        }
 
     </style>
 </head>
 <body>
 
 <div class="container">
+    <div class="logo">
 <?xml version="1.0" encoding="UTF-8"?>
 <svg id="a" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="485.693" height="43.608" viewBox="0 0 485.693 43.608">
   <g fill="none" isolation="isolate">
@@ -194,6 +202,7 @@ display:inline-grid;
   <rect y="41.995" width="485.693" height="1.613" fill="#b2b2b2"/>
   <rect width="485.693" height="1.613" fill="#b2b2b2"/>
 </svg>
+    </div>
     <canvas id="logoCanvas" width="900" height="280"></canvas>
     <div class="controls">
         <div>
