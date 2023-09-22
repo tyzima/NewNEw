@@ -397,18 +397,29 @@ function convertAllTextsToPaths(callback) {
 }
 
 document.getElementById('downloadBtn').addEventListener('click', function () {
-  // Convert text to paths before exporting
-  convertAllTextsToPaths(() => {
-    const svgData = canvas.toSVG();
-    const blob = new Blob([svgData], {type: 'image/svg+xml'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'custom_logo.svg';
-    a.click();
-    URL.revokeObjectURL(url);
+  // Convert top and bottom text to paths
+  textToPath(topText, function (topPath) {
+    textToPath(bottomText, function (bottomPath) {
+      canvas.remove(topText, bottomText);
+      canvas.add(topPath, bottomPath);
+
+      // Export to SVG
+      const svgData = canvas.toSVG();
+      const blob = new Blob([svgData], {type: 'image/svg+xml'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'custom_logo.svg';
+      a.click();
+      URL.revokeObjectURL(url);
+
+      // Replace paths back to text for further editing
+      canvas.remove(topPath, bottomPath);
+      canvas.add(topText, bottomText);
+    });
   });
 });
+
 
 
 
