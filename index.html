@@ -399,40 +399,56 @@ function textToPath(textObject, callback) {
   });
 }
 
-async function downloadSVG(){
-    // Load the font first
-    const font = await opentype.load('.VintageHat.OTF');
-
-    const textEls = document.querySelectorAll('#svg-container text');
-    textEls.forEach(textEl => {
-        const text = textEl.innerHTML;
-        const x = parseFloat(textEl.getAttribute('x') || 0);
-        const y = parseFloat(textEl.getAttribute('y') || 0);
-        const fontSize = parseFloat(window.getComputedStyle(textEl, null).getPropertyValue('font-size'));
-
-        // Create path data
-        const pathData = font.getPath(text, x, y, fontSize).toPathData();
-
-        // Create a new path element
-        const newPathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        newPathEl.setAttribute('d', pathData);
-
-        // Add the path element to the SVG, and remove the text element
-        textEl.parentNode.insertBefore(newPathEl, textEl);
-        textEl.parentNode.removeChild(textEl);
-    });
-
-    // Existing code for downloading SVG
-    var svgEl = document.getElementById("svg-container");
-    var svgData = new XMLSerializer().serializeToString(svgEl);
-    var blob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
-    var url = URL.createObjectURL(blob);
+document.getElementById('download-svg').addEventListener('click', async function () {
+    // Get objects from canvas
+    const objects = canvas.getObjects();
     
-    var link = document.createElement("a");
-    link.href = url;
-    link.download = "new-file.svg";
-    link.click();
-}
+    // Load the font (assuming Arial for demo; replace with your actual font and its URL)
+    const fontUrl = 'Vintagehat.otf';  // Replace with the actual path or URL to your font file
+
+    // Create an SVG document to store paths
+    const parser = new DOMParser();
+    const serializer = new XMLSerializer();
+    let svgStr = canvas.toSVG();
+    let svgDoc = parser.parseFromString(svgStr, 'image/svg+xml');
+    
+    for (let i = 0; i < objects.length; i++) {
+        if (objects[i].type === 'text') {
+            const textObj = objects[i];
+            const text = textObj.text;
+            const x = textObj.left;
+            const y = textObj.top + textObj.height;  // Adjust y-coordinate
+
+            try {
+                const pathData = await textToPath(fontUrl, text, x, y);
+                // Create path element
+                const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                pathElement.setAttribute('d', pathData);
+                
+                // Remove the text element from SVG
+                const textElements = svgDoc.querySelectorAll('text');
+                textElements[i].remove();
+
+                // Append the path element to SVG
+                svgDoc.documentElement.appendChild(pathElement);
+            } catch (err) {
+                console.error('Error in text to path conversion:', err);
+            }
+        }
+    }
+    
+    // Serialize the updated SVG document to string
+    const updatedSvgStr = serializer.serializeToString(svgDoc);
+    
+    // Download the updated SVG
+    const blob = new Blob([updatedSvgStr], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'canvas.svg';
+    a.click();
+});
+
 
 
 
