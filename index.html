@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Customizable Text Logo</title>
+  <!-- Google Material Design -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Custom Font -->
+  <style>
+    @font-face {
+      font-family: 'VintageHat';
+      src: url('VintageHat.OTF') format('opentype');
+    }
+    .container {
+      font-family: 'Roboto', sans-serif;
+      margin: 20px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .controls label {
+      font-weight: 500;
+      margin-right: 10px;
+    }
+    .controls input[type="text"] {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .controls button {
+      background-color: #6200ea;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .controls button:hover {
+      background-color: #3700b3;
+    }
+    .color-option {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      margin-right: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Customize Your Text Logo</h1>
+    <canvas id="logoCanvas" width="800" height="400"></canvas>
+    <div class="controls">
+      <label for="topText">Top Text:</label>
+      <input type="text" id="topText">
+      <label for="bottomText">Bottom Text:</label>
+      <input type="text" id="bottomText">
+      <label>Font Color:</label>
+      <div id="fontColorPicker"></div>
+      <label>Line Color:</label>
+      <div id="lineColorPicker"></div>
+      <button id="downloadBtn">Download SVG</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.6.0/fabric.min.js"></script>
+  <script>
+    document.fonts.load('1em "VintageHat"').then(function() {
+      const canvas = new fabric.Canvas('logoCanvas');
+      let loadedObject;
+      let topText, bottomText;
+
+      fabric.loadSVGFromURL('SVG.svg', function(objects, options) {
+        loadedObject = fabric.util.groupSVGElements(objects, options);
+        canvas.add(loadedObject);
+        canvas.renderAll();
+      });
+
+      function generateColorOptions(elementId, colors, callback) {
+        const container = document.getElementById(elementId);
+        colors.forEach(color => {
+          const colorOption = document.createElement('div');
+          colorOption.classList.add('color-option');
+          colorOption.style.backgroundColor = color.value;
+          colorOption.title = color.label;
+          colorOption.addEventListener('click', () => {
+            callback(color.value);
+          });
+          container.appendChild(colorOption);
+        });
+      }
+
+      const colorOptions = [
+        { value: '#000000', label: 'Black' },
+        { value: '#ffffff', label: 'White' },
+      ];
+
+      generateColorOptions('fontColorPicker', colorOptions, (color) => {
+        if (topText) {
+          topText.set({ fill: color });
+          canvas.renderAll();
+        }
+      });
+
+      generateColorOptions('lineColorPicker', colorOptions, (color) => {
+        if (loadedObject) {
+          loadedObject.set({ stroke: color });
+          canvas.renderAll();
+        }
+      });
+
+      function addText(position, text, color) {
+        const newText = new fabric.Text(text, {
+          left: canvas.width / 2,
+          top: position,
+          fill: color,
+          fontFamily: 'VintageHat',
+          originX: 'center',
+          originY: 'center'
+        });
+        return newText;
+      }
+
+      document.getElementById('topText').addEventListener('input', function() {
+        if (topText) {
+          canvas.remove(topText);
+        }
+        topText = addText(100, this.value, '#000000');
+        canvas.add(topText);
+        canvas.renderAll();
+      });
+
+      document.getElementById('bottomText').addEventListener('input', function() {
+        if (bottomText) {
+          canvas.remove(bottomText);
+        }
+        bottomText = addText(300, this.value, '#000000');
+        canvas.add(bottomText);
+        canvas.renderAll();
+      });
+
+      document.getElementById('downloadBtn').addEventListener('click', function() {
+        if (topText) topText.set({ text: '', stroke: topText.fill, strokeWidth: 1 });
+        if (bottomText) bottomText.set({ text: '', stroke: bottomText.fill, strokeWidth: 1 });
+        const svgData = canvas.toSVG();
+        const blob = new Blob([svgData], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'custom_logo.svg';
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    });
+  </script>
+
+</body>
+</html>
