@@ -247,7 +247,7 @@ fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
   topText = addTopText(110, "TEAM", "#000000");
   canvas.add(topText);
   
-  bottomText = addBottomText(190, "LACROSSE", "#000000");
+  bottomText = addBottomText(195, "LACROSSE", "#000000");
   canvas.add(bottomText);
 
   canvas.renderAll();
@@ -364,7 +364,7 @@ document.getElementById('bottomText').addEventListener('input', function () {
   if (bottomText) {
     canvas.remove(bottomText);
   }
-  bottomText = addBottomText(190, this.value, '#000000');
+  bottomText = addBottomText(195, this.value, '#000000');
   canvas.add(bottomText);
   canvas.renderAll();
 });
