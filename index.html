@@ -1,10 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-
-    <meta charset="UTF-8">
-    <title>Customizable Text Logo</title>
-    <style>
+<meta charset="utf-8"/>
+<title>Customizable Text Logo</title>
+<style>
         @font-face {
             font-family: 'VintageHat';
             src: url('VintageHat.OTF') format('opentype');
@@ -177,27 +177,24 @@ display:inline-grid;
     </style>
 </head>
 <body>
-
 <div class="container">
-
-    <canvas id="logoCanvas" width="900" height="280"></canvas>
-    <div class="controls">
-        <div>
-        <label for="topText">Top Text:</label>
-        <input type="text" id="topText">
-        <label for="bottomText">Bottom Text:</label>
-        <input type="text" id="bottomText">
-                     <label>Line Width</label>
-<input type="range" id="svgWidthSlider" min="100" max="1000" value="450">
-        </div>
-        <label>Font Color:</label>
-        <div id="fontColorPicker"></div>
-        <label>Line Color:</label>
-        <div id="lineColorPicker"></div><br>
-        <button id="downloadBtn">Download SVG</button>
-    </div>
+<canvas height="280" id="logoCanvas" width="900"></canvas>
+<div class="controls">
+<div>
+<label for="topText">Top Text:</label>
+<input id="topText" type="text"/>
+<label for="bottomText">Bottom Text:</label>
+<input id="bottomText" type="text"/>
+<label>Line Width</label>
+<input id="svgWidthSlider" max="1000" min="100" type="range" value="450"/>
 </div>
-
+<label>Font Color:</label>
+<div id="fontColorPicker"></div>
+<label>Line Color:</label>
+<div id="lineColorPicker"></div><br/>
+<button id="downloadBtn">Download SVG</button>
+</div>
+</div>
 <script src="fabric/fabric.js"></script>
 <script>
     document.fonts.load('1em "VintageHat"').then(function () {
@@ -390,7 +387,17 @@ document.getElementById('downloadBtn').addEventListener('click', function () {
 
         
     });
-</script>
 
+// Convert all text objects to paths before exporting
+canvas.forEachObject(function(obj) {
+  if (obj.type === 'text' || obj.type === 'i-text') {
+    obj.clone(function(clone) {
+      var path = clone.toPathObject();
+      canvas.remove(obj);
+      canvas.add(path);
+    });
+  }
+});
+</script>
 </body>
 </html>
