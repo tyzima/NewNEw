@@ -65,7 +65,7 @@
         <div id="fontColorPicker"></div>
         <label>Line Color:</label>
         <div id="lineColorPicker"></div>
-        <button id="undoBtn">Undo</button>
+<input type="range" id="svgWidthSlider" min="50" max="500" value="182">
         <button id="downloadBtn">Download SVG</button>
     </div>
 </div>
@@ -211,6 +211,19 @@ document.getElementById('bottomText').addEventListener('input', function () {
   bottomText = addBottomText(208.8, this.value, '#000000');
   canvas.add(bottomText);
   canvas.renderAll();
+});
+
+        document.getElementById('svgWidthSlider').addEventListener('input', function() {
+  if (loadedObject) {
+    const newWidth = parseFloat(this.value);
+    const scaleFactor = newWidth / loadedObject.getScaledWidth();
+    
+    loadedObject.set({
+      scaleX: loadedObject.scaleX * scaleFactor
+    });
+
+    canvas.renderAll();
+  }
 });
 
 
