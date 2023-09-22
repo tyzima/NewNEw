@@ -197,6 +197,8 @@ display:inline-grid;
 </div>
 <script src="fabric/fabric.js"></script>
 <script>
+
+        
     document.fonts.load('1em "VintageHat"').then(function () {
         const canvas = new fabric.Canvas('logoCanvas');
         let loadedObject;
@@ -215,6 +217,18 @@ fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
   });
   canvas.add(loadedObject);
 
+        let font;
+
+// Load the font first
+opentype.load('VintageHat.otf', function(err, loadedFont) {
+    if (err) {
+        console.error('Font could not be loaded: ' + err);
+    } else {
+        font = loadedFont;
+    }
+});
+
+        
   // Initialize default text for top and bottom
   topText = addTopText(110, "TEAM", "#000000");
   canvas.add(topText);
@@ -238,6 +252,28 @@ fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
                 container.appendChild(colorOption);
             });
         }
+
+            // Function to replace a Fabric.js Text object with a Path object
+function replaceTextWithPaths(textObj, callback) {
+    const text = textObj.text;
+    const fontSize = textObj.fontSize;
+    const pathData = font.getPath(text, 0, 0, fontSize).toPathData();
+    const pathObj = new fabric.Path(pathData);
+
+    pathObj.set({
+        left: textObj.left,
+        top: textObj.top,
+        fill: textObj.fill,
+        scaleX: textObj.scaleX,
+        scaleY: textObj.scaleY,
+        angle: textObj.angle,
+        originX: 'center',
+        originY: 'center'
+    });
+
+    callback(pathObj);
+}
+
 
     const colorOptions = [
   { value: '#ffffff', label: 'White' },
@@ -413,11 +449,20 @@ function convertTextToPaths() {
     });
 }
 
-// Placeholder to show where to call 'convertTextToPaths' in your 'Download SVG' logic
-// Placeholder to show where to call 'convertTextToPaths' in your 'Download SVG' logic
+// Function to call when you want to download the SVG
 function downloadSVG() {
-    convertTextToPaths();  // Call this function to convert all text to paths
-    // Your existing 'Download SVG' logic goes here
+    // Iterate over all objects and replace text objects with paths
+    const allObjects = canvas.getObjects();
+    allObjects.forEach(function(obj) {
+        if (obj.type === 'text') {
+            replaceTextWithPaths(obj, function(pathObj) {
+                canvas.remove(obj);
+                canvas.add(pathObj);
+            });
+        }
+    });
+
+    // Now, export to SVG
     const svgData = canvas.toSVG();
     const blob = new Blob([svgData], {type: 'image/svg+xml'});
     const url = URL.createObjectURL(blob);
