@@ -244,10 +244,10 @@ fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
   canvas.add(loadedObject);
 
   // Initialize default text for top and bottom
-  topText = addTopText(122.5, "TEAM", "#000000");
+  topText = addTopText(100, "TEAM", "#000000");
   canvas.add(topText);
   
-  bottomText = addBottomText(208.8, "LACROSSE", "#000000");
+  bottomText = addBottomText(180, "LACROSSE", "#000000");
   canvas.add(bottomText);
 
   canvas.renderAll();
@@ -341,7 +341,7 @@ document.getElementById('topText').addEventListener('input', function () {
   if (topText) {
     canvas.remove(topText);
   }
-  topText = addTopText(122.5, this.value, '#000000');
+  topText = addTopText(100, this.value, '#000000');
   canvas.add(topText);
   canvas.renderAll();
 });
@@ -364,7 +364,7 @@ document.getElementById('bottomText').addEventListener('input', function () {
   if (bottomText) {
     canvas.remove(bottomText);
   }
-  bottomText = addBottomText(208.8, this.value, '#000000');
+  bottomText = addBottomText(180, this.value, '#000000');
   canvas.add(bottomText);
   canvas.renderAll();
 });
