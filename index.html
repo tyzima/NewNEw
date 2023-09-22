@@ -388,31 +388,7 @@ document.getElementById('downloadBtn').addEventListener('click', function () {
         
     });
 
-// Function to convert text to paths using opentype.js
-function convertTextToPaths() {
-    // Load the font (assuming the font is available at 'path/to/font.otf')
-    opentype.load('path/to/font.otf', function(err, font) {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        // Locate all text elements within the SVG (assuming the SVG id is 'svgElement')
-        const svg = document.getElementById('svgElement');
-        const textElements = svg.querySelectorAll('text');
-        textElements.forEach(function(textElement) {
-            const text = textElement.textContent;
-            const x = parseFloat(textElement.getAttribute('x') || 0);
-            const y = parseFloat(textElement.getAttribute('y') || 0);
-            const pathData = font.getPath(text, x, y, /* fontSize= */ 72).toPathData();
-            const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            pathElement.setAttribute('d', pathData);
-            textElement.parentNode.replaceChild(pathElement, textElement);
-        });
-    });
-}
 
-// Update your 'Download SVG' logic to call 'convertTextToPaths' before generating the download link
-// ...
 
 // Function to convert text to paths using opentype.js
 function convertTextToPaths() {
@@ -438,11 +414,20 @@ function convertTextToPaths() {
 }
 
 // Placeholder to show where to call 'convertTextToPaths' in your 'Download SVG' logic
+// Placeholder to show where to call 'convertTextToPaths' in your 'Download SVG' logic
 function downloadSVG() {
-    convertTextToPaths();
-    // Existing 'Download SVG' logic goes here
-    // ...
+    convertTextToPaths();  // Call this function to convert all text to paths
+    // Your existing 'Download SVG' logic goes here
+    const svgData = canvas.toSVG();
+    const blob = new Blob([svgData], {type: 'image/svg+xml'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'custom_logo.svg';
+    a.click();
+    URL.revokeObjectURL(url);
 }
+
 </script>
 </body>
 </html>
