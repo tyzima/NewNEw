@@ -91,7 +91,7 @@ fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
   canvas.add(loadedObject);
 
   // Initialize default text for top and bottom
-  topText = addTopText(119, "TEAMNAME", "#000000");
+  topText = addTopText(122, "TEAMNAME", "#000000");
   canvas.add(topText);
   
   bottomText = addBottomText(208.8, "LACROSSE", "#000000");
@@ -185,7 +185,7 @@ document.getElementById('topText').addEventListener('input', function () {
   if (topText) {
     canvas.remove(topText);
   }
-  topText = addTopText(119, this.value, '#000000');
+  topText = addTopText(122, this.value, '#000000');
   canvas.add(topText);
   canvas.renderAll();
 });
