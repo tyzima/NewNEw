@@ -125,35 +125,53 @@
             }
         });
 
-        function addText(position, text, color) {
-            const newText = new fabric.Text(text, {
-                left: canvas.width / 2,
-                top: position,
-                fill: color,
-                fontFamily: 'VintageHat',
-                originX: 'center',
-                originY: 'center'
-            });
-            return newText;
-        }
 
-        document.getElementById('topText').addEventListener('input', function () {
-            if (topText) {
-                canvas.remove(topText);
-            }
-            topText = addText(100, this.value, '#000000');
-            canvas.add(topText);
-            canvas.renderAll();
-        });
+        function addTopText(position, text, color) {
+  const newText = new fabric.Text(text, {
+    left: canvas.width / 2,
+    top: position,
+    fill: color,
+    fontSize: 48,
+    fontFamily: 'VintageHat',
+    originX: 'center',
+    originY: 'center'
+  });
+  return newText;
+}
 
-        document.getElementById('bottomText').addEventListener('input', function () {
-            if (bottomText) {
-                canvas.remove(bottomText);
-            }
-            bottomText = addText(300, this.value, '#000000');
-            canvas.add(bottomText);
-            canvas.renderAll();
-        });
+document.getElementById('topText').addEventListener('input', function () {
+  if (topText) {
+    canvas.remove(topText);
+  }
+  topText = addTopText(100, this.value, '#000000');
+  canvas.add(topText);
+  canvas.renderAll();
+});
+
+
+        
+function addBottomText(position, text, color) {
+  const newText = new fabric.Text(text, {
+    left: canvas.width / 2,
+    top: position - 30,
+    fill: color,
+    fontSize: 24,
+    fontFamily: 'VintageHat',
+    originX: 'center',
+    originY: 'center'
+  });
+  return newText;
+}
+
+document.getElementById('bottomText').addEventListener('input', function () {
+  if (bottomText) {
+    canvas.remove(bottomText);
+  }
+  bottomText = addBottomText(300, this.value, '#000000');
+  canvas.add(bottomText);
+  canvas.renderAll();
+});
+
 
         document.getElementById('downloadBtn').addEventListener('click', function () {
             const svgData = canvas.toSVG();
