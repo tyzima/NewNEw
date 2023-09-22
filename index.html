@@ -375,16 +375,41 @@ function textToPath(textObject, callback) {
   });
 }
 
+function convertAllTextsToPaths(callback) {
+  const textsToConvert = [];
+  canvas.forEachObject((obj) => {
+    if (obj.type === 'text') {
+      textsToConvert.push(obj);
+    }
+  });
+
+  let convertedCount = 0;
+  textsToConvert.forEach((textObj) => {
+    textToPath(textObj, (pathObj) => {
+      canvas.remove(textObj);
+      canvas.add(pathObj);
+      convertedCount++;
+      if (convertedCount === textsToConvert.length) {
+        callback();
+      }
+    });
+  });
+}
+
 document.getElementById('downloadBtn').addEventListener('click', function () {
-            const svgData = canvas.toSVG();
-            const blob = new Blob([svgData], {type: 'image/svg+xml'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'custom_logo.svg';
-            a.click();
-            URL.revokeObjectURL(url);
-        });
+  // Convert text to paths before exporting
+  convertAllTextsToPaths(() => {
+    const svgData = canvas.toSVG();
+    const blob = new Blob([svgData], {type: 'image/svg+xml'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'custom_logo.svg';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+});
+
 
 
 
