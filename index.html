@@ -70,10 +70,19 @@
         let loadedObject;
         let topText, bottomText;
 
-        fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
-            loadedObject = fabric.util.groupSVGElements(objects, options);
-            canvas.add(loadedObject).renderAll();
-        });
+    fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
+  loadedObject = fabric.util.groupSVGElements(objects, options);
+  loadedObject.set({
+    left: canvas.width / 2,
+    top: canvas.height / 2,
+    scaleX: 0.7,
+    scaleY: 0.7,
+    originX: 'center',
+    originY: 'center'
+  });
+  canvas.add(loadedObject).renderAll();
+});
+
 
         function generateColorOptions(elementId, colors, callback) {
             const container = document.getElementById(elementId);
