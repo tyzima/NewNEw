@@ -150,12 +150,16 @@ fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
 ];
 
 
-        generateColorOptions('fontColorPicker', colorOptions, (color) => {
-            if (topText) {
-                topText.set({fill: color});
-                canvas.renderAll();
-            }
-        });
+ generateColorOptions('fontColorPicker', colorOptions, (color) => {
+  if (topText) {
+    topText.set({ fill: color });
+  }
+  if (bottomText) {
+    bottomText.set({ fill: color });
+  }
+  canvas.renderAll();
+});
+
 
         generateColorOptions('lineColorPicker', colorOptions, (color) => {
             if (loadedObject) {
@@ -163,7 +167,6 @@ fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
                 canvas.renderAll();
             }
         });
-
 
 
 
