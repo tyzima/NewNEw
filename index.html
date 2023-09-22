@@ -249,33 +249,37 @@ function textToPath(textObject, callback) {
   });
 }
 
-document.getElementById('downloadBtn').addEventListener('click', async function () {
-    const [topTextPath, bottomTextPath] = await Promise.all([
-        new Promise(resolve => textToPath(topText, resolve)),
-        new Promise(resolve => textToPath(bottomText, resolve))
-    ]);
+document.getElementById('downloadSVG').addEventListener('click', function() {
+  textToPath(topText, function(topTextPath) {
+    textToPath(bottomText, function(bottomTextPath) {
+      // Remove original text objects
+      if (topText) canvas.remove(topText);
+      if (bottomText) canvas.remove(bottomText);
 
-    if (topText) canvas.remove(topText);
-    if (bottomText) canvas.remove(bottomText);
-    if (topTextPath) canvas.add(topTextPath);
-    if (bottomTextPath) canvas.add(bottomTextPath);
+      // Add path objects
+      if (topTextPath) canvas.add(topTextPath);
+      if (bottomTextPath) canvas.add(bottomTextPath);
 
-    const svgData = canvas.toSVG();
+      // Export and download SVG
+      const svgData = canvas.toSVG();
+      const blob = new Blob([svgData], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'logo.svg';
+      a.click();
 
-    if (topTextPath) canvas.remove(topTextPath);
-    if (bottomTextPath) canvas.remove(bottomTextPath);
-    if (topText) canvas.add(topText);
-    if (bottomText) canvas.add(bottomText);
+      // Remove path objects and re-add text objects for further editing
+      if (topTextPath) canvas.remove(topTextPath);
+      if (bottomTextPath) canvas.remove(bottomTextPath);
+      if (topText) canvas.add(topText);
+      if (bottomText) canvas.add(bottomText);
 
-    const pdf = new jsPDF();
-    pdf.svg(svgData, {
-        x: 0,
-        y: 0,
-        width: 210,
-        height: 297,
+      canvas.renderAll();
     });
-    pdf.save('custom_logo.pdf');
+  });
 });
+
 
 
 
