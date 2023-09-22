@@ -408,20 +408,7 @@ function textToPath(textObject, callback) {
   });
 }
 
-document.getElementById('downloadBtn').addEventListener('click', function () {
-            const svgData = canvas.toSVG();
-            const blob = new Blob([svgData], {type: 'image/svg+xml'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'custom_logo.svg';
-            a.click();
-            URL.revokeObjectURL(url);
-        });
-
-
-
-        
+  
     });
 
 
@@ -449,6 +436,57 @@ function convertTextToPaths() {
     });
 }
 
+async function convertAndDownloadSVG() {
+  const allObjects = canvas.getObjects();
+  
+  // Wait for all text objects to be converted and replaced
+  await Promise.all(allObjects.map(async (obj) => {
+    if (obj.type === 'text') {
+      await new Promise((resolve) => {
+        const text = obj.text;
+        const fontSize = obj.fontSize;
+        const pathData = font.getPath(text, 0, 0, fontSize).toPathData();
+        const pathObj = new fabric.Path(pathData);
+
+        pathObj.set({
+          left: obj.left,
+          top: obj.top,
+          fill: obj.fill,
+          angle: obj.angle,
+          scaleX: obj.scaleX,
+          scaleY: obj.scaleY,
+          originX: 'center',
+          originY: 'center'
+        });
+
+        canvas.remove(obj);
+        canvas.add(pathObj);
+        resolve();
+      });
+    }
+  }));
+
+  // Export to SVG
+  const svgData = canvas.toSVG();
+  const blob = new Blob([svgData], {type: 'image/svg+xml'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'custom_logo.svg';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Load the font first
+opentype.load('VintageHat.otf', function(err, loadedFont) {
+  if (err) {
+    console.error('Font could not be loaded: ' + err);
+  } else {
+    font = loadedFont;
+  }
+});
+
+
 // Function to call when you want to download the SVG
 function downloadSVG() {
     // Iterate over all objects and replace text objects with paths
@@ -473,6 +511,64 @@ function downloadSVG() {
     URL.revokeObjectURL(url);
 }
 
+        let font;
+
+// Load the font first
+opentype.load('VintageHat.otf', function(err, loadedFont) {
+  if (err) {
+    console.error('Font could not be loaded: ' + err);
+  } else {
+    font = loadedFont;
+  }
+});
+
+async function convertAndDownloadSVG() {
+  const allObjects = canvas.getObjects();
+
+  // Wait for all text objects to be converted and replaced
+  await Promise.all(allObjects.map(async (obj) => {
+    if (obj.type === 'text') {
+      await new Promise((resolve) => {
+        const text = obj.text;
+        const fontSize = obj.fontSize;
+        const pathData = font.getPath(text, 0, 0, fontSize).toPathData();
+        const pathObj = new fabric.Path(pathData);
+
+        pathObj.set({
+          left: obj.left,
+          top: obj.top,
+          fill: obj.fill,
+          angle: obj.angle,
+          scaleX: obj.scaleX,
+          scaleY: obj.scaleY,
+          originX: 'center',
+          originY: 'center'
+        });
+
+        canvas.remove(obj);
+        canvas.add(pathObj);
+        resolve();
+      });
+    }
+  }));
+
+  // Export to SVG
+  const svgData = canvas.toSVG();
+  const blob = new Blob([svgData], {type: 'image/svg+xml'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'custom_logo.svg';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+document.getElementById('downloadBtn').addEventListener('click', async function () {
+  await convertAndDownloadSVG();
+});
+
+
+        
 </script>
 </body>
 </html>
