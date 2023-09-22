@@ -223,7 +223,11 @@ display:inline-grid;
 </div>
 <script src="fabric/fabric.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/opentype.js@latest/dist/opentype.min.js"></script>
+
+
 <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    
     document.fonts.load('1em "VintageHat"').then(function () {
         const canvas = new fabric.Canvas('logoCanvas');
         let loadedObject;
@@ -454,7 +458,8 @@ document.getElementById('download-svg').addEventListener('click', async function
 
         
     });
-</script><script>
+
+
 // Function to convert Fabric.js text to paths using OpenType.js
 async function textToPaths(textObj) {
   return new Promise((resolve, reject) => {
@@ -500,6 +505,9 @@ document.getElementById('download-svg').addEventListener('click', async function
   link.click();
   URL.revokeObjectURL(url);
 });
+
+  });
 </script>
+
 </body>
 </html>
