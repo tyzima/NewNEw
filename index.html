@@ -375,41 +375,16 @@ function textToPath(textObject, callback) {
   });
 }
 
-// Function to convert text objects to paths
-function convertTextToPaths(canvas) {
-    const objects = canvas.getObjects('text');  // get all text objects
-    objects.forEach(function(object) {
-        object.clone(function(clone) {
-            clone.toSVG(function(svg) {
-                fabric.loadSVGFromString(svg, function(objects, options) {
-                    const pathObject = fabric.util.groupSVGElements(objects, options);
-                    pathObject.set({
-                        left: object.left,
-                        top: object.top,
-                        fill: object.fill,
-                        angle: object.angle
-                    });
-                    canvas.remove(object);
-                    canvas.add(pathObject);
-                    canvas.renderAll();
-                });
-            });
-        });
-    });
-}
-
 document.getElementById('downloadBtn').addEventListener('click', function () {
-    convertTextToPaths(canvas);  // Convert text to paths before exporting
-    const svgData = canvas.toSVG();
-    const blob = new Blob([svgData], {type: 'image/svg+xml'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'custom_logo.svg';
-    a.click();
-    URL.revokeObjectURL(url);
-});
-
+            const svgData = canvas.toSVG();
+            const blob = new Blob([svgData], {type: 'image/svg+xml'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'custom_logo.svg';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
 
 
 
