@@ -26,6 +26,11 @@
  left:26%;
 }
 
+        #logoCanvas {
+  height: 50vh; /* 50% of viewport height */
+  width: auto;
+}
+
 /* Heading */
 .container h1{
  font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;
@@ -200,6 +205,24 @@ display:inline-grid;
 
 <script src="fabric/fabric.js"></script>
 <script>
+
+    function resizeCanvas() {
+  const canvasElem = document.getElementById('logoCanvas');
+  const styleHeight = +getComputedStyle(canvasElem).getPropertyValue('height').slice(0, -2);
+  const styleWidth = +getComputedStyle(canvasElem).getPropertyValue('width').slice(0, -2);
+
+  // Set the canvas internal dimensions to match the style dimensions
+  canvasElem.setAttribute('height', styleHeight);
+  canvasElem.setAttribute('width', styleWidth);
+}
+
+// Initial resize
+resizeCanvas();
+
+// Resize the canvas whenever the window is resized
+window.addEventListener('resize', resizeCanvas);
+
+    
     document.fonts.load('1em "VintageHat"').then(function () {
         const canvas = new fabric.Canvas('logoCanvas');
         let loadedObject;
