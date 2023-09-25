@@ -395,29 +395,32 @@ function convertAllTextsToPaths(callback) {
 
 document.getElementById('downloadBtn').addEventListener('click', function () {
   // Convert top and bottom text to paths
-  textToPath(topText, function (topPath) {
-    textToPath(bottomText, function (bottomPath) {
-      canvas.remove(topText, bottomText);
-      canvas.add(topPath, bottomPath);
+  const topPath = topText.toPath();
+  const bottomPath = bottomText.toPath();
+  canvas.remove(topText, bottomText);
+  canvas.add(topPath, bottomPath);
 
-      // Export to SVG
-      const svgData = canvas.toSVG();
-      const blob = new Blob([svgData], {type: 'image/svg+xml'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'custom_logo.svg';
-      a.click();
-      URL.revokeObjectURL(url);
-
-      // Replace paths back to text for further editing
-      canvas.remove(topPath, bottomPath);
-      canvas.add(topText, bottomText);
-    });
+  // Convert all text objects to path objects
+  canvas.getObjects('text').forEach(function (text) {
+    const path = text.toPath();
+    canvas.remove(text);
+    canvas.add(path);
   });
+
+  // Export to SVG
+  const svgData = canvas.toSVG();
+  const blob = new Blob([svgData], {type: 'image/svg+xml'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'custom_logo.svg';
+  a.click();
+  URL.revokeObjectURL(url);
+
+  // Replace paths back to text for further editing
+  canvas.remove(topPath, bottomPath);
+  canvas.add(topText, bottomText);
 });
-
-
 
 
 
