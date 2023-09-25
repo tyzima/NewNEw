@@ -354,6 +354,25 @@ document.getElementById('bottomText').addEventListener('input', function () {
   }
 });
 
+        
+        function convertAllTextsToPaths(callback) {
+  const objects = canvas.getObjects();
+  let counter = objects.length;
+
+  objects.forEach(function (object) {
+    if (object.type === 'text') {
+      const path = object.toPath();
+      canvas.remove(object);
+      canvas.add(path);
+    }
+
+    counter--;
+    if (counter === 0 && callback) {
+      callback();
+    }
+  });
+}
+
         document.getElementById('downloadBtn').addEventListener('click', function () {
   // Convert top and bottom text to paths
   textToPath(topText, function (topPath) {
