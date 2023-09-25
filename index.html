@@ -354,6 +354,21 @@ document.getElementById('bottomText').addEventListener('input', function () {
   }
 });
 
+        function textToPath(text, callback) {
+  const path = new fabric.Text(text, {
+    fontFamily: 'Arial',
+    fontSize: 80,
+    fontWeight: 'bold',
+    fill: '#000000',
+    originX: 'center',
+    originY: 'center',
+    selectable: false,
+  }).toPath();
+
+  if (callback) {
+    callback(path);
+  }
+}
 
 textToPath(topText, function (topPath) {
   textToPath(bottomText, function (bottomPath) {
