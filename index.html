@@ -294,114 +294,105 @@ fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
         });
 
 
+  const canvas = new fabric.Canvas('canvas');
+    let topText, bottomText;
 
-// Adding top text
-function addTopText(position, text, color) {
-  const newText = new fabric.Text(text, {
-    left: canvas.width / 2,
-    top: position,
-    fill: color,
-    fontSize: 107,
-    fontFamily: 'VintageHat',
-    originX: 'center',
-    originY: 'center'
-  });
-  return newText;
-}
+    function textToPath(text, callback) {
+      const path = new fabric.Text(text, {
+        fontFamily: 'Arial',
+        fontSize: 80,
+        fontWeight: 'bold',
+        fill: '#000000',
+        originX: 'center',
+        originY: 'center',
+        selectable: false,
+      }).toPath();
 
-document.getElementById('topText').addEventListener('input', function () {
-  if (topText) {
-    canvas.remove(topText);
-  }
-  topText = addTopText(110, this.value, '#000000');
-  canvas.add(topText);
-  canvas.renderAll();
-});
-
-// Adding bottom text
-function addBottomText(position, text, color) {
-  const newText = new fabric.Text(text, {
-    left: canvas.width / 2,
-    top: position,
-    fill: color,
-    fontSize: 66.6757,
-    fontFamily: 'VintageHat',
-    originX: 'center',
-    originY: 'center'
-  });
-  return newText;
-}
-
-document.getElementById('bottomText').addEventListener('input', function () {
-  if (bottomText) {
-    canvas.remove(bottomText);
-  }
-  bottomText = addBottomText(195, this.value, '#000000');
-  canvas.add(bottomText);
-  canvas.renderAll();
-});
-
-        document.getElementById('svgWidthSlider').addEventListener('input', function() {
-  if (loadedObject) {
-    const newWidth = parseFloat(this.value);
-    const scaleFactor = newWidth / loadedObject.getScaledWidth();
-    
-    loadedObject.set({
-      scaleX: loadedObject.scaleX * scaleFactor
-    });
-
-    canvas.renderAll();
-  }
-});
-
-        
-        function convertAllTextsToPaths(callback) {
-  const objects = canvas.getObjects();
-  let counter = objects.length;
-
-  objects.forEach(function (object) {
-    if (object.type === 'text') {
-      const path = object.toPath();
-      canvas.remove(object);
-      canvas.add(path);
+      if (callback) {
+        callback(path);
+      }
     }
 
-    counter--;
-    if (counter === 0 && callback) {
-      callback();
+    function convertAllTextsToPaths(callback) {
+      const objects = canvas.getObjects();
+      let counter = objects.length;
+
+      objects.forEach(function (object) {
+        if (object.type === 'text') {
+          const path = object.toPath();
+          canvas.remove(object);
+          canvas.add(path);
+        }
+
+        counter--;
+        if (counter === 0 && callback) {
+          callback();
+        }
+      });
     }
-  });
-}
 
-        document.getElementById('downloadBtn').addEventListener('click', function () {
-  // Convert top and bottom text to paths
-  textToPath(topText, function (topPath) {
-    textToPath(bottomText, function (bottomPath) {
-      canvas.remove(topText, bottomText);
-      canvas.add(topPath, bottomPath);
-
-      // Export to SVG
-      const svgData = canvas.toSVG();
-      const blob = new Blob([svgData], {type: 'image/svg+xml'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'custom_logo.svg';
-      a.click();
-      URL.revokeObjectURL(url);
-
-      // Replace paths back to text for further editing
-      canvas.remove(topPath, bottomPath);
-      canvas.add(topText, bottomText);
+    document.getElementById('topText').addEventListener('input', function () {
+      if (topText) {
+        canvas.remove(topText);
+      }
+      topText = new fabric.Text(this.value, {
+        left: canvas.width / 2,
+        top: 110,
+        fill: '#000000',
+        fontSize: 107,
+        fontFamily: 'VintageHat',
+        originX: 'center',
+        originY: 'center'
+      });
+      canvas.add(topText);
+      canvas.renderAll();
     });
-  });
-});
 
-
-
-        
+    document.getElementById('bottomText').addEventListener('input', function () {
+      if (bottomText) {
+        canvas.remove(bottomText);
+      }
+      bottomText = new fabric.Text(this.value, {
+        left: canvas.width / 2,
+        top: 195,
+        fill: '#000000',
+        fontSize: 66.6757,
+        fontFamily: 'VintageHat',
+        originX: 'center',
+        originY: 'center'
+      });
+      canvas.add(bottomText);
+      canvas.renderAll();
     });
-</script>
 
+    document.getElementById('downloadBtn').addEventListener('click', function () {
+      // Convert top and bottom text to paths
+      textToPath(topText.text, function (topPath) {
+        textToPath(bottomText.text, function (bottomPath) {
+          canvas.remove(topText, bottomText);
+          canvas.add(topPath, bottomPath);
+
+          // Convert all text objects to path objects
+          convertAllTextsToPaths(function() {
+            // Download the resulting SVG
+            const svg = canvas.toSVG();
+            const blob = new Blob([svg], {type: "image/svg+xml"});
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "logo.svg";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            // Replace paths back to text for further editing
+            canvas.remove(topPath, bottomPath);
+            canvas.add(topText, bottomText);
+          });
+        });
+      });
+    });
+  </script>
 </body>
 </html>
