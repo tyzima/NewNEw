@@ -194,7 +194,7 @@ display:inline-grid;
         <button id="downloadBtn">Download SVG</button>
     </div>
 </div>
-
+<script src="svg-text-to-path-opentypejs.js"></script>
 <script src="fabric/fabric.js"></script>
 <script>
     document.fonts.load('1em "VintageHat"').then(function () {
@@ -215,12 +215,11 @@ fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
   });
   canvas.add(loadedObject);
 
-  // Initialize default text for top and bottom
-  topText = addTopText(110, "TEAM", "#000000");
-  canvas.add(topText);
-  
-  bottomText = addBottomText(195, "LACROSSE", "#000000");
-  canvas.add(bottomText);
+topText = addTopText(110, "TEAM", "#000000");
+canvas.add(topText);
+
+bottomText = addBottomText(195, "LACROSSE", "#000000");
+canvas.add(bottomText);
 
   canvas.renderAll();
 });
@@ -394,27 +393,32 @@ function convertAllTextsToPaths(callback) {
 }
 
 document.getElementById('downloadBtn').addEventListener('click', function () {
-  // Convert top and bottom text to paths
-  textToPath(topText, function (topPath) {
-    textToPath(bottomText, function (bottomPath) {
-      canvas.remove(topText, bottomText);
-      canvas.add(topPath, bottomPath);
+  
+  // Export the current state of the canvas to SVG
+  let svgString = canvas.toSVG();
 
-      // Export to SVG
-      const svgData = canvas.toSVG();
-      const blob = new Blob([svgData], {type: 'image/svg+xml'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'custom_logo.svg';
-      a.click();
-      URL.revokeObjectURL(url);
+  // Initialize the svg-text-to-path session
+  let session = new Session(svgString);
 
-      // Replace paths back to text for further editing
-      canvas.remove(topPath, bottomPath);
-      canvas.add(topText, bottomText);
-    });
-  });
+  // Find and replace text elements
+  session.replace(topText);
+  session.replace(bottomText);
+
+  // Get the modified SVG string
+  let modifiedSvgString = session.getSvgString();
+
+  // Destroy the session
+  session.destroy();
+  
+  // Use modifiedSvgString for downloading
+  const blob = new Blob([modifiedSvgString], {type: 'image/svg+xml'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'custom_logo.svg';
+  a.click();
+  URL.revokeObjectURL(url);
+
 });
 
 
