@@ -1,431 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
-    <meta charset="UTF-8">
-    <title>Customizable Text Logo</title>
-    <style>
-        @font-face {
-            font-family: 'VintageHat';
-            src: url('VintageHat.OTF') format('opentype');
-        }
+  <meta charset="UTF-8">
+  <title>Customizable Text Logo</title>
+  <style>
+    @font-face {
+      font-family: 'VintageHat';
+      src: url('VintageHat.OTF') format('opentype');
+    }
 
-        @import url("//fonts.googleapis.com/css2?family=Alfa+Slab+One:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap");
-
-
-
-/* Label */
-.controls div label{
-}
-
-/* Download */
-#downloadBtn{
- position:relative;
- width:47%;
- left:26%;
-}
-
-/* Heading */
-.container h1{
- font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;
-}
-
-/* Controls */
-.container .controls{
- position:static;
- z-index:138;
- transform:translatex(0px) translatey(0px);
- float:none;
- opacity:1;
- clear:none;
- display:inline-flex;
- cursor:auto;
- grid-template-columns:1fr;
- align-content:center;
- justify-content:center;
- pointer-events:auto;
- flex-direction:column;
- align-items:normal;
-}
-
-/* Container */
-.container{
- transform:translatex(0px) translatey(0px);
- position:static;
- display:grid;
- align-content:center;
- justify-content:center;
-}
-
-
-        h1 {
-  font-family: 'Vintage Hat', sans-serif;
-}
-
-/* Label */
-.container .controls label{
- text-align:center;
- text-shadow:none;
- text-transform:uppercase;
- font-style:normal;
- line-height:24.4px;
- font-size:11px;
-color:rgba(0,0,0,0.27);
-     font-weight:700;
-
-}
-
-/* Top text */
-#topText{
- transform:translatex(0px) translatey(0px);
- float:none;
- display:inline-grid;
-}
-
-/* Font color picker */
-#fontColorPicker{
- display:inline-flex;
- flex-wrap:wrap;
- width:100%;
- transform:translatex(0px) translatey(0px);
- background-color:transparent !important;
-     justify-content:center;
- width:100%;
-}
-
-        .color-option{
-      border: 1px solid lightgrey;
-        }
-
-/* Line color picker */
-#lineColorPicker{
- display:inline-flex;
- flex-wrap:wrap;
- flex-direction:row;
-    justify-content:center;
- width:100%;
-}
-
-/* Download */
-#downloadBtn{
- background-image:linear-gradient(to right, #0575e6 0%, #021b79 100%);
-}
-
-/* Width slider */
-#svgWidthSlider{
- background-color:transparent;
- box-shadow:none;
-display:inline-grid;
-}
-
-        .container {
-            font-family: 'Roboto', sans-serif;
-            margin: 20px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 20px;
-            background-color: #fff;
-        }
-        .controls label {
-            font-weight: 500;
-            margin-right: 10px;
-        }
-        .controls input[type="text"] {
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .controls button {
-            background-color: #6200ea;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .controls button:hover {
-            background-color: #3700b3;
-        }
-        .color-option {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            margin-right: 5px;
-            cursor: pointer;
-        }
-
-        .canvas-container {
-            
-        background-image: url("/bgfab.jpg");
-          background-size: cover;
-            margin-bottom: 30px;
-            border-radius: 10px;
-        }
-            
-        #fontColorPicker, #lineColorPicker {
-  display: flex;
-  flex-direction: row;
-}
-        .logo {
-           text-align: center;
-            padding-top: 15px;
-            padding-bottom: 20px;
-        }
-
-    </style>
+    @import url("//fonts.googleapis.com/css2?family=Alfa+Slab+One:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap");
+  </style>
+  <link rel="stylesheet" href="./css/style.css">
 </head>
+
 <body>
 
-<div class="container">
+  <div class="container">
 
     <canvas id="logoCanvas" width="900" height="280"></canvas>
     <div class="controls">
-        <div>
+      <div>
         <label for="topText">Top Text:</label>
         <input type="text" id="topText">
         <label for="bottomText">Bottom Text:</label>
         <input type="text" id="bottomText">
-                     <label>Line Width</label>
-<input type="range" id="svgWidthSlider" min="100" max="1000" value="450">
-        </div>
-        <label>Font Color:</label>
-        <div id="fontColorPicker"></div>
-        <label>Line Color:</label>
-        <div id="lineColorPicker"></div><br>
-        <button id="downloadBtn">Download SVG</button>
+        <label>Line Width</label>
+        <input type="range" id="svgWidthSlider" min="100" max="1000" value="450">
+      </div>
+      <label>Font Color:</label>
+      <div id="fontColorPicker"></div>
+      <label>Line Color:</label>
+      <div id="lineColorPicker"></div><br>
+      <button id="downloadBtn">Download SVG</button>
     </div>
-</div>
+  </div>
+  <a id="downloadLink" style="display: none" download="image.svg">Download SVG</a>
 
-<script src="fabric/fabric.js"></script>
-<script>
-    document.fonts.load('1em "VintageHat"').then(function () {
-        const canvas = new fabric.Canvas('logoCanvas');
-        let loadedObject;
-        let topText, bottomText;
-
-fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
-  loadedObject = fabric.util.groupSVGElements(objects, options);
-  const scaleFactor = 182.598 / loadedObject.height;
-  loadedObject.set({
-    left: canvas.width / 2,
-    top: canvas.height / 2,
-    scaleX: scaleFactor,
-    scaleY: scaleFactor,
-    originX: 'center',
-    originY: 'center'
-  });
-  canvas.add(loadedObject);
-
-  // Initialize default text for top and bottom
-  topText = addTopText(110, "TEAM", "#000000");
-  canvas.add(topText);
-  
-  bottomText = addBottomText(195, "LACROSSE", "#000000");
-  canvas.add(bottomText);
-
-  canvas.renderAll();
-});
-
-        function generateColorOptions(elementId, colors, callback) {
-            const container = document.getElementById(elementId);
-            colors.forEach(color => {
-                const colorOption = document.createElement('div');
-                colorOption.classList.add('color-option');
-                colorOption.style.backgroundColor = color.value;
-                colorOption.title = color.label;
-                colorOption.addEventListener('click', () => {
-                    callback(color.value);
-                });
-                container.appendChild(colorOption);
-            });
-        }
-
-    const colorOptions = [
-  { value: '#ffffff', label: 'White' },
-  { value: '#a2a9ad', label: 'Grey' },
-  { value: '#0D131A', label: 'Black' },
-  { value: '#373a36', label: 'Dark Grey' },
-  { value: '#513629', label: 'Brown' },
-  { value: '#d0b787', label: 'Vegas Khaki' },
-  { value: '#85714D', label: 'Metallic Gold' },
-  { value: '#12284b', label: 'Navy Blue' },
-  { value: '#114734', label: 'Forest Green' },
-  { value: '#007940', label: 'Kelly Green' },
-  { value: '#006271', label: 'Deep Teal' },
-  { value: '#00b1bd', label: 'Light Teal' },
-  { value: '#6fa2e4', label: 'Nike Carolina' },
-  { value: '#418fde', label: 'Hopkins Blue' },
-  { value: '#174293', label: 'Nike Cobalt' },
-  { value: '#6dd6ff', label: 'Cascade Carolina' },
-  { value: '#80fff3', label: 'Seafoam' },
-  { value: '#93d500', label: 'Lime Green' },
-  { value: '#03db48', label: 'Electric Green' },
-  { value: '#ffb71b', label: 'Athletic Gold' },
-  { value: '#fff200', label: 'Yellow' },
-  { value: '#ee3724', label: 'Nike Orange' },
-  { value: '#ff5219', label: 'Cascade Orange' },
-  { value: '#FF8200', label: 'Tennesee Orange' },
-  { value: '#592d82', label: 'Purple' },
-  { value: '#f732a1', label: 'Hot Pink' },
-  { value: '#ffa5d8', label: 'Light Pink' },
-  { value: '#6e0624', label: 'Burgundy' },
-  { value: '#50131f', label: 'Deep Burgundy' },
-  { value: '#A41034', label: 'Crimson' },
-  { value: '#d00120', label: 'Scarlet Red' },
-  { value: '#CD5A13', label: 'Texas Orange' }
-];
-
-
- generateColorOptions('fontColorPicker', colorOptions, (color) => {
-  if (topText) {
-    topText.set({ fill: color });
-  }
-  if (bottomText) {
-    bottomText.set({ fill: color });
-  }
-  canvas.renderAll();
-});
-
-
-        generateColorOptions('lineColorPicker', colorOptions, (color) => {
-            if (loadedObject) {
-                loadedObject.set({fill: color});
-                canvas.renderAll();
-            }
-        });
-
-
-
-// Adding top text
-function addTopText(position, text, color) {
-  const newText = new fabric.Text(text, {
-    left: canvas.width / 2,
-    top: position,
-    fill: color,
-    fontSize: 107,
-    fontFamily: 'VintageHat',
-    originX: 'center',
-    originY: 'center'
-  });
-  return newText;
-}
-
-document.getElementById('topText').addEventListener('input', function () {
-  if (topText) {
-    canvas.remove(topText);
-  }
-  topText = addTopText(110, this.value, '#000000');
-  canvas.add(topText);
-  canvas.renderAll();
-});
-
-// Adding bottom text
-function addBottomText(position, text, color) {
-  const newText = new fabric.Text(text, {
-    left: canvas.width / 2,
-    top: position,
-    fill: color,
-    fontSize: 66.6757,
-    fontFamily: 'VintageHat',
-    originX: 'center',
-    originY: 'center'
-  });
-  return newText;
-}
-
-document.getElementById('bottomText').addEventListener('input', function () {
-  if (bottomText) {
-    canvas.remove(bottomText);
-  }
-  bottomText = addBottomText(195, this.value, '#000000');
-  canvas.add(bottomText);
-  canvas.renderAll();
-});
-
-        document.getElementById('svgWidthSlider').addEventListener('input', function() {
-  if (loadedObject) {
-    const newWidth = parseFloat(this.value);
-    const scaleFactor = newWidth / loadedObject.getScaledWidth();
-    
-    loadedObject.set({
-      scaleX: loadedObject.scaleX * scaleFactor
-    });
-
-    canvas.renderAll();
-  }
-});
-
-
-function textToPath(textObject, callback) {
-  if (!textObject) return;
-
-  const textAsSVG = textObject.toSVG();
-  fabric.loadSVGFromString(textAsSVG, function (objects, options) {
-    const pathObject = fabric.util.groupSVGElements(objects, options);
-    pathObject.set({
-      left: textObject.left,
-      top: textObject.top,
-      fill: textObject.fill,
-      originX: 'center',
-      originY: 'center'
-    });
-    callback(pathObject);
-  });
-}
-
-function convertAllTextsToPaths(callback) {
-  const textsToConvert = [];
-  canvas.forEachObject((obj) => {
-    if (obj.type === 'text') {
-      textsToConvert.push(obj);
-    }
-  });
-
-  let convertedCount = 0;
-  textsToConvert.forEach((textObj) => {
-    textToPath(textObj, (pathObj) => {
-      canvas.remove(textObj);
-      canvas.add(pathObj);
-      convertedCount++;
-      if (convertedCount === textsToConvert.length) {
-        callback();
-      }
-    });
-  });
-}
-
-document.getElementById('downloadBtn').addEventListener('click', function () {
-  // Convert top and bottom text to paths
-  textToPath(topText, function (topPath) {
-    textToPath(bottomText, function (bottomPath) {
-      canvas.remove(topText, bottomText);
-      canvas.add(topPath, bottomPath);
-
-      // Export to SVG
-      const svgData = canvas.toSVG();
-      const blob = new Blob([svgData], {type: 'image/svg+xml'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'custom_logo.svg';
-      a.click();
-      URL.revokeObjectURL(url);
-
-      // Replace paths back to text for further editing
-      canvas.remove(topPath, bottomPath);
-      canvas.add(topText, bottomText);
-    });
-  });
-});
-
-
-
-
-
-        
-    });
-</script>
-
+  <script src="fabric/fabric.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="./js/script.js"></script>
 </body>
+
 </html>
