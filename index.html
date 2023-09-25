@@ -395,43 +395,26 @@ function convertAllTextsToPaths(callback) {
     });
   });
 }
-
 document.getElementById('downloadBtn').addEventListener('click', function () {
   
-  // First, convert the text objects to SVG path using FabricJS native toSVG method
-  const topTextSVG = topText.toSVG();
-  const bottomTextSVG = bottomText.toSVG();
+  // Export the current state of the canvas to SVG
+  let svgString = canvas.toSVG();
 
-  // Use DOMParser to convert the SVG string to SVG Document
-  const parser = new DOMParser();
-  const topTextDoc = parser.parseFromString(topTextSVG, 'image/svg+xml');
-  const bottomTextDoc = parser.parseFromString(bottomTextSVG, 'image/svg+xml');
+  // Initialize the svg-text-to-path session
+  let session = new Session(svgString);
 
-  // Extract the path data from the SVG Document
-  const topTextPathData = topTextDoc.querySelector('text').getAttribute('d');
-  const bottomTextPathData = bottomTextDoc.querySelector('text').getAttribute('d');
+  // Find and replace text elements
+  session.replace(topText);
+  session.replace(bottomText);
 
-  // Replace the text objects with path objects in the canvas
-  const topTextPath = new fabric.Path(topTextPathData, {
-    left: topText.left,
-    top: topText.top,
-    fill: topText.fill
-  });
+  // Get the modified SVG string
+  let modifiedSvgString = session.getSvgString();
+
+  // Destroy the session
+  session.destroy();
   
-  const bottomTextPath = new fabric.Path(bottomTextPathData, {
-    left: bottomText.left,
-    top: bottomText.top,
-    fill: bottomText.fill
-  });
-
-  canvas.remove(topText, bottomText);
-  canvas.add(topTextPath, bottomTextPath);
-
-  // Now, export the canvas to SVG
-  const svgData = canvas.toSVG();
-
-  // Use this SVG data for downloading
-  const blob = new Blob([svgData], {type: 'image/svg+xml'});
+  // Use modifiedSvgString for downloading
+  const blob = new Blob([modifiedSvgString], {type: 'image/svg+xml'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -439,12 +422,7 @@ document.getElementById('downloadBtn').addEventListener('click', function () {
   a.click();
   URL.revokeObjectURL(url);
 
-  // Replace the path objects back to text for further editing
-  canvas.remove(topTextPath, bottomTextPath);
-  canvas.add(topText, bottomText);
 });
-
-
 
 
         
