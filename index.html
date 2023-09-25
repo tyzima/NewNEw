@@ -194,10 +194,7 @@ display:inline-grid;
         <button id="downloadBtn">Download SVG</button>
     </div>
 </div>
-<script src="/fabric/svg-text-to-path-opentypejs.js"></script>
-<script>
-  console.log("svg-text-to-path loaded:", typeof Session !== "undefined");
-</script>
+<script src="fabric/svg-text-to-path-opentypejs.js"></script>
     
 <script src="fabric/fabric.js"></script>
 <script>
@@ -358,43 +355,6 @@ document.getElementById('bottomText').addEventListener('input', function () {
 });
 
 
-function textToPath(textObject, callback) {
-  if (!textObject) return;
-
-  const textAsSVG = textObject.toSVG();
-  fabric.loadSVGFromString(textAsSVG, function (objects, options) {
-    const pathObject = fabric.util.groupSVGElements(objects, options);
-    pathObject.set({
-      left: textObject.left,
-      top: textObject.top,
-      fill: textObject.fill,
-      originX: 'center',
-      originY: 'center'
-    });
-    callback(pathObject);
-  });
-}
-
-function convertAllTextsToPaths(callback) {
-  const textsToConvert = [];
-  canvas.forEachObject((obj) => {
-    if (obj.type === 'text') {
-      textsToConvert.push(obj);
-    }
-  });
-
-  let convertedCount = 0;
-  textsToConvert.forEach((textObj) => {
-    textToPath(textObj, (pathObj) => {
-      canvas.remove(textObj);
-      canvas.add(pathObj);
-      convertedCount++;
-      if (convertedCount === textsToConvert.length) {
-        callback();
-      }
-    });
-  });
-}
 document.getElementById('downloadBtn').addEventListener('click', function () {
   
   // Export the current state of the canvas to SVG
