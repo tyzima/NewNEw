@@ -196,7 +196,6 @@ display:inline-grid;
 </div>
 
 <script src="fabric/fabric.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/svg-text-to-path@1.0.0/dist/svg-text-to-path.min.js"></script>
 <script>
     document.fonts.load('1em "VintageHat"').then(function () {
         const canvas = new fabric.Canvas('logoCanvas');
@@ -355,79 +354,44 @@ document.getElementById('bottomText').addEventListener('input', function () {
   }
 });
 
-   const canvas = new fabric.Canvas('canvas');
-    let topText, bottomText;
 
-    function textToPath(textObject, callback) {
-      if (!textObject) return;
+function textToPath(textObject, callback) {
+  if (!textObject) return;
 
-      const textAsSVG = textObject.toSVG();
-      fabric.loadSVGFromString(textAsSVG, function (objects, options) {
-        const pathObject = fabric.util.groupSVGElements(objects, options);
-        pathObject.set({
-          left: textObject.left,
-          top: textObject.top,
-          fill: textObject.fill,
-          originX: 'center',
-          originY: 'center'
-        });
-        callback(pathObject);
-      });
-    }
-
-    function convertAllTextsToPaths(callback) {
-      const textsToConvert = [];
-      canvas.forEachObject((obj) => {
-        if (obj.type === 'text') {
-          textsToConvert.push(obj);
-        }
-      });
-      let convertedCount = 0;
-      textsToConvert.forEach((textObj) => {
-        textToPath(textObj, (pathObj) => {
-          canvas.remove(textObj);
-          canvas.add(pathObj);
-          convertedCount++;
-          if (convertedCount === textsToConvert.length) {
-            callback();
-          }
-        });
-      });
-    }
-
-    document.getElementById('topText').addEventListener('input', function () {
-      if (topText) {
-        canvas.remove(topText);
-      }
-      topText = new fabric.Text(this.value, {
-        left: canvas.width / 2,
-        top: 110,
-        fill: '#000000',
-        fontSize: 107,
-        fontFamily: 'VintageHat',
-        originX: 'center',
-        originY: 'center'
-      });
-      canvas.add(topText);
-      canvas.renderAll();
+  const textAsSVG = textObject.toSVG();
+  fabric.loadSVGFromString(textAsSVG, function (objects, options) {
+    const pathObject = fabric.util.groupSVGElements(objects, options);
+    pathObject.set({
+      left: textObject.left,
+      top: textObject.top,
+      fill: textObject.fill,
+      originX: 'center',
+      originY: 'center'
     });
+    callback(pathObject);
+  });
+}
 
-    document.getElementById('bottomText').addEventListener('input', function () {
-      if (bottomText) {
-        canvas.remove(bottomText);
+function convertAllTextsToPaths(callback) {
+  const textsToConvert = [];
+  canvas.forEachObject((obj) => {
+    if (obj.type === 'text') {
+      textsToConvert.push(obj);
+    }
+  });
+
+  let convertedCount = 0;
+  textsToConvert.forEach((textObj) => {
+    textToPath(textObj, (pathObj) => {
+      canvas.remove(textObj);
+      canvas.add(pathObj);
+      convertedCount++;
+      if (convertedCount === textsToConvert.length) {
+        callback();
       }
-      bottomText = new fabric.Text(this.value, {
-        left: canvas.width / 2,
-        top: 195,
-        fill: '#000000',
-        fontSize: 66.6757,
-        fontFamily: 'VintageHat',
-        originX: 'center',
-        originY: 'center'
-      });
-      canvas.add(bottomText);
-      canvas.renderAll();
     });
+  });
+}
 
 document.getElementById('downloadBtn').addEventListener('click', function () {
   // Convert top and bottom text to paths
@@ -436,27 +400,30 @@ document.getElementById('downloadBtn').addEventListener('click', function () {
       canvas.remove(topText, bottomText);
       canvas.add(topPath, bottomPath);
 
-      // Convert all text objects to path objects
-      convertAllTextsToPaths(function() {
-        // Download the resulting SVG
-        const svg = canvas.toSVG();
-        const blob = new Blob([svg], {type: "image/svg+xml"});
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "logo.svg";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+      // Export to SVG
+      const svgData = canvas.toSVG();
+      const blob = new Blob([svgData], {type: 'image/svg+xml'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'custom_logo.svg';
+      a.click();
+      URL.revokeObjectURL(url);
 
-        // Replace paths back to text for further editing
-        canvas.remove(topPath, bottomPath);
-        canvas.add(topText, bottomText);
-      });
+      // Replace paths back to text for further editing
+      canvas.remove(topPath, bottomPath);
+      canvas.add(topText, bottomText);
     });
   });
 });
-  </script>
+
+
+
+
+
+        
+    });
+</script>
+
 </body>
 </html>
