@@ -156,119 +156,23 @@ document.fonts.load('1em "VintageHat"').then(function () {
         }
     });
 
-
-    // function textToPath(textObject, callback) {
-    //     if (!textObject) return;
-
-    //     const textAsSVG = textObject.toSVG();
-    //     fabric.loadSVGFromString(textAsSVG, function (objects, options) {
-    //         const pathObject = fabric.util.groupSVGElements(objects, options);
-    //         pathObject.set({
-    //             left: textObject.left,
-    //             top: textObject.top,
-    //             fill: textObject.fill,
-    //             originX: 'center',
-    //             originY: 'center'
-    //         });
-    //         callback(pathObject);
-    //     });
-    // }
-
-    function textToPath(textObject, callback) {
-        if (!textObject) return;
-
-        textObject.setCoords(); // Ensure that the text object's coordinates are up to date
-
-        const textBoundingBox = textObject.getBoundingRect();
-        const textWidth = textBoundingBox.width;
-        const textHeight = textBoundingBox.height;
-        const centerX = textBoundingBox.left + textWidth / 2;
-        const centerY = textBoundingBox.top + textHeight / 2;
-
-        const textAsSVG = textObject.toSVG();
-        fabric.loadSVGFromString(textAsSVG, function (objects, options) {
-            const pathObject = fabric.util.groupSVGElements(objects, options);
-            pathObject.set({
-                left: centerX, // Center the path horizontally
-                top: centerY,  // Center the path vertically
-                fill: textObject.fill,
-                originX: 'center',
-                originY: 'center',
-            });
-            callback(pathObject);
-        });
-    }
-
-
-    function convertAllTextsToPaths(callback) {
-        const textsToConvert = [];
-        canvas.forEachObject((obj) => {
-            if (obj.type === 'text') {
-                textsToConvert.push(obj);
-            }
-        });
-
-        let convertedCount = 0;
-        textsToConvert.forEach((textObj) => {
-            textToPath(textObj, (pathObj) => {
-                canvas.remove(textObj);
-                canvas.add(pathObj);
-                convertedCount++;
-                if (convertedCount === textsToConvert.length) {
-                    callback();
-                }
-            });
-        });
-    }
-    const downloadLink = document.getElementById('downloadLink');
-
-    // Function to convert an image to SVG
-    async function imageToSVG(imageData, width, height) {
-        return new Promise((resolve) => {
-            const svgNS = 'http://www.w3.org/2000/svg';
-            const svg = document.createElementNS(svgNS, 'svg');
-            svg.setAttribute('width', width);
-            svg.setAttribute('height', height);
-
-            const image = new Image();
-            image.src = imageData;
-
-            image.onload = function () {
-                const imageElement = document.createElementNS(svgNS, 'image');
-                imageElement.setAttribute('x', '0');
-                imageElement.setAttribute('y', '0');
-                imageElement.setAttribute('width', width);
-                imageElement.setAttribute('height', height);
-                imageElement.setAttributeNS('http://www.w3.org/1999/xlink', 'href', imageData);
-
-                svg.appendChild(imageElement);
-                resolve(svg);
-            };
-        });
-    }
-
-    // Function to convert canvas to SVG and download as a file
-    async function convertAndDownload() {
-        const canvasDataURL = canvas.toDataURL();
-        const svg = await imageToSVG(canvasDataURL, canvas.width, canvas.height);
-
-        const svgData = new XMLSerializer().serializeToString(svg);
-        const svgBlob = new Blob([svgData], { type: 'image/svg+xml' });
-        const svgUrl = URL.createObjectURL(svgBlob);
-
-        const a = document.createElement('a');
-        a.href = svgUrl;
-        a.download = 'custom_logo.svg';
-        a.style.display = 'none';
-        document.body.appendChild(a);
-
-        a.click();
-        URL.revokeObjectURL(svgUrl);
-        document.body.removeChild(a);
-    }
-
     // Attach the click event handler to the download button
-    document.getElementById('downloadBtn').addEventListener('click', convertAndDownload);
+    document.getElementById('downloadBtn').addEventListener('click', function () {
+        const svgPathData = canvas.toSVG();
+
+        const blob = new Blob([svgPathData], { type: "text/plain" });
+        const blobUrl = URL.createObjectURL(blob);
+
+        const downloadLink = document.createElement("a");
+        downloadLink.href = blobUrl;
+        downloadLink.download = "svg-path.txt"; // Specify the filename
+        downloadLink.textContent = "Download Text File";
+
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+
+        URL.revokeObjectURL(blobUrl);
+    });
 
 });
 
