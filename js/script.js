@@ -41,7 +41,7 @@ document.fonts.load('1em "VintageHat"').then(function () {
             container.appendChild(colorOption);
         });
     }
-
+    
     const colorOptions = [
         { value: '#ffffff', label: 'White' },
         { value: '#a2a9ad', label: 'Grey' },
@@ -88,14 +88,12 @@ document.fonts.load('1em "VintageHat"').then(function () {
         canvas.renderAll();
     });
 
-
     generateColorOptions('lineColorPicker', colorOptions, (color) => {
         if (loadedObject) {
             loadedObject.set({ fill: color });
             canvas.renderAll();
         }
     });
-
 
     // Adding top text
     function addTopText(position, text, color) {
@@ -156,23 +154,31 @@ document.fonts.load('1em "VintageHat"').then(function () {
         }
     });
 
-    // Attach the click event handler to the download button
+    // Modified download button click event
     document.getElementById('downloadBtn').addEventListener('click', function () {
-        const svgPathData = canvas.toSVG();
-
-        const blob = new Blob([svgPathData], { type: "text/plain" });
-        const blobUrl = URL.createObjectURL(blob);
-
-        const downloadLink = document.createElement("a");
-        downloadLink.href = blobUrl;
-        downloadLink.download = "svg-path.txt"; // Specify the filename
-        downloadLink.textContent = "Download Text File";
-
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-
-        URL.revokeObjectURL(blobUrl);
+        canvas.toSVG({
+            suppressPreamble: true,
+            viewBox: {
+                x: 0,
+                y: 0,
+                width: canvas.width,
+                height: canvas.height
+            }
+        }, function(svg) {
+            // Convert SVG string to Blob
+            const blob = new Blob([svg], {type: 'image/svg+xml'});
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'custom-logo.svg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        });
     });
-
 });
 
+
+
+                                             
