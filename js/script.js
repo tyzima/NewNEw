@@ -1,31 +1,40 @@
-document.fonts.load('1em "VintageHat"').then(function () {
+document.addEventListener('DOMContentLoaded', function () {
+    var canvas = new fabric.Canvas('logoCanvas');
 
-    canvas = new fabric.Canvas('logoCanvas');
-    let loadedObject;
-    let topText, bottomText;
-
-    fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
-        loadedObject = fabric.util.groupSVGElements(objects, options);
-        const scaleFactor = 182.598 / loadedObject.height;
-        loadedObject.set({
-            left: canvas.width / 2,
-            top: canvas.height / 2,
-            scaleX: scaleFactor,
-            scaleY: scaleFactor,
-            originX: 'center',
-            originY: 'center'
-        });
-        canvas.add(loadedObject);
-
-        // Initialize default text for top and bottom
-        topText = addTopText(110, "TEAM", "#000000");
-        canvas.add(topText);
-
-        bottomText = addBottomText(195, "LACROSSE", "#000000");
-        canvas.add(bottomText);
-
-        canvas.renderAll();
+    // Load the custom font
+    var font = new FontFace('VintageHat', 'url(https://res.cloudinary.com/laxdotcom/raw/upload/v1706991845/VintageHat_uu0o5b.otf)');
+    font.load().then(function (loadedFont) {
+        document.fonts.add(loadedFont);
+        initCanvas();
+    }).catch(function (error) {
+        console.error('Font loading failed: ', error);
     });
+
+    function initCanvas() {
+        // Load SVG and initialize the canvas with it
+        fabric.loadSVGFromURL('SVG.svg', function (objects, options) {
+            var loadedObject = fabric.util.groupSVGElements(objects, options);
+            var scaleFactor = 182.598 / loadedObject.height;
+            loadedObject.set({
+                left: canvas.width / 2,
+                top: canvas.height / 2,
+                scaleX: scaleFactor,
+                scaleY: scaleFactor,
+                originX: 'center',
+                originY: 'center'
+            });
+            canvas.add(loadedObject);
+
+            // Initialize default text for top and bottom
+            var topText = addTopText(110, "TEAM", "#000000");
+            canvas.add(topText);
+
+            var bottomText = addBottomText(195, "LACROSSE", "#000000");
+            canvas.add(bottomText);
+
+            canvas.renderAll();
+        });
+        
 
     function generateColorOptions(elementId, colors, callback) {
         const container = document.getElementById(elementId);
@@ -95,10 +104,16 @@ document.fonts.load('1em "VintageHat"').then(function () {
         }
     });
 
+      loadOpentypeLibrary().then(() => {
+            // Attach event listener to the download button after opentype.js has loaded
+            document.getElementById('downloadBtn').addEventListener('click', downloadSVGWithOutlines);
+        }).catch((error) => {
+            console.error('Failed to load opentype.js library:', error);
+        });
+    }
 
-    // Adding top text
     function addTopText(position, text, color) {
-        const newText = new fabric.Text(text, {
+        return new fabric.Text(text, {
             left: canvas.width / 2,
             top: position,
             fill: color,
@@ -107,21 +122,10 @@ document.fonts.load('1em "VintageHat"').then(function () {
             originX: 'center',
             originY: 'center'
         });
-        return newText;
     }
 
-    document.getElementById('topText').addEventListener('input', function () {
-        if (topText) {
-            canvas.remove(topText);
-        }
-        topText = addTopText(110, this.value, '#000000');
-        canvas.add(topText);
-        canvas.renderAll();
-    });
-
-    // Adding bottom text
     function addBottomText(position, text, color) {
-        const newText = new fabric.Text(text, {
+        return new fabric.Text(text, {
             left: canvas.width / 2,
             top: position,
             fill: color,
@@ -130,47 +134,54 @@ document.fonts.load('1em "VintageHat"').then(function () {
             originX: 'center',
             originY: 'center'
         });
-        return newText;
     }
 
-    document.getElementById('bottomText').addEventListener('input', function () {
-        if (bottomText) {
-            canvas.remove(bottomText);
-        }
-        bottomText = addBottomText(195, this.value, '#000000');
-        canvas.add(bottomText);
-        canvas.renderAll();
-    });
+    function downloadSVGWithOutlines() {
+        // Assuming opentype.js is now loaded, we can use it to convert text to paths
+        opentype.load('https://res.cloudinary.com/laxdotcom/raw/upload/v1706991845/VintageHat_uu0o5b.otf', function (err, font) {
+            if (err) {
+                console.error('Font could not be loaded:', err);
+                return;
+            }
 
-    document.getElementById('svgWidthSlider').addEventListener('input', function () {
-        if (loadedObject) {
-            const newWidth = parseFloat(this.value);
-            const scaleFactor = newWidth / loadedObject.getScaledWidth();
-
-            loadedObject.set({
-                scaleX: loadedObject.scaleX * scaleFactor
+            canvas.getObjects().forEach(obj => {
+                if (obj.type === 'text') {
+                    var paths = font.getPaths(obj.text, 0, 0, obj.fontSize);
+                    var pathData = paths.map(path => path.toSVG()).join('');
+                    var pathObject = new fabric.Path(pathData, {
+                        left: obj.left,
+                        top: obj.top,
+                        fill: obj.fill,
+                        originX: 'center',
+                        originY: 'center'
+                    });
+                    canvas.remove(obj);
+                    canvas.add(pathObject);
+                }
             });
 
             canvas.renderAll();
-        }
-    });
 
-    // Attach the click event handler to the download button
-    document.getElementById('downloadBtn').addEventListener('click', function () {
-        const svgPathData = canvas.toSVG();
+            // Now export the canvas as SVG
+            var svg = canvas.toSVG();
+            var blob = new Blob([svg], {type: 'image/svg+xml'});
+            var url = URL.createObjectURL(blob);
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = 'custom_design.svg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    }
 
-        const blob = new Blob([svgPathData], { type: "text/plain" });
-        const blobUrl = URL.createObjectURL(blob);
-
-        const downloadLink = document.createElement("a");
-        downloadLink.href = blobUrl;
-        downloadLink.download = "svg-path.txt"; // Specify the filename
-        downloadLink.textContent = "Download Text File";
-
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-
-        URL.revokeObjectURL(blobUrl);
-    });
-
+    function loadOpentypeLibrary() {
+        return new Promise((resolve, reject) => {
+            var script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/opentype.js@latest/dist/opentype.min.js';
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    }
 });
