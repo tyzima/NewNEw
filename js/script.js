@@ -155,30 +155,32 @@ document.fonts.load('1em "VintageHat"').then(function () {
     });
 
     // Modified download button click event
-    document.getElementById('downloadBtn').addEventListener('click', function () {
-        canvas.toSVG({
-            suppressPreamble: true,
-            viewBox: {
-                x: 0,
-                y: 0,
-                width: canvas.width,
-                height: canvas.height
-            }
-        }, function(svg) {
-            // Convert SVG string to Blob
-            const blob = new Blob([svg], {type: 'image/svg+xml'});
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'custom-logo.svg';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-        });
+document.getElementById('downloadBtn').addEventListener('click', function () {
+    // Convert the canvas to an SVG string
+    const svgString = canvas.toSVG({
+        suppressPreamble: true,
+        viewBox: {
+            x: 0,
+            y: 0,
+            width: canvas.width,
+            height: canvas.height
+        }
     });
-});
 
+    // This assumes the SVG string is correct. The error might be in how the SVG is structured.
+    // If the SVG is still invalid, the issue could be with how text objects are represented in the SVG.
+    // A manual conversion process or using a server-side solution to convert text to paths might be required.
+
+    const blob = new Blob([svgString], {type: 'image/svg+xml'});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'custom-logo.svg';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+});
 
 
                                              
